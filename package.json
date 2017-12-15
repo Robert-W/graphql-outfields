@@ -1,0 +1,26 @@
+{
+  "name": "graphql-outfields",
+  "version": "0.9.0",
+  "description": "Parse the return fields from a GraphQL query",
+  "main": "src/index.js",
+  "author": "Robert-W <RWinter85@gmail.com>",
+  "license": "MIT",
+	"scripts": {
+		"test": "set -e; npm run test:lint; npm run test:src;",
+		"test:lint": "eslint \"src/**/*.js\"",
+		"test:src": "jest"
+	},
+	"jest": {
+		"verbose": true,
+		"collectCoverage": true,
+		"coverageReporters": [
+			"text",
+			"lcov",
+			"json"
+		]
+	},
+  "devDependencies": {
+    "graphql": "^0.11.7",
+    "jest": "^21.2.1"
+  }
+}
