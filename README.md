@@ -1,4 +1,4 @@
-graphql-outfields
+graphql-outfields [![Build Status](https://travis-ci.org/Robert-W/graphql-outfields.svg?branch=master)](https://travis-ci.org/Robert-W/graphql-outfields)
 =================
 > Parse the return fields from a GraphQL query by means of the resolver info.
 
