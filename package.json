@@ -6,9 +6,9 @@
 	"author": "Robert-W <RWinter85@gmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"test": "set -e; npm run test:lint; npm run test:src;",
+		"test": "set -e; npm run test:lint; npm run test:jest;",
 		"test:lint": "eslint \"src/**/*.js\"",
-		"test:src": "jest"
+		"test:jest": "jest"
 	},
 	"jest": {
 		"verbose": true,
