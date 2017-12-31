@@ -1,4 +1,6 @@
-const { hasValue } = require('../src/utils');
+
+
+const { hasValue } = require('../utils');
 
 const mock = {
 	scooby: {

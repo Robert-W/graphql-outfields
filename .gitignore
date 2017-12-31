@@ -3,6 +3,8 @@ node_modules
 
 # Generated Content
 coverage
+dist
+npm
 *.log
 
 # System Files

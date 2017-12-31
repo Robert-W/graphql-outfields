@@ -6,8 +6,12 @@
     "node": true,
     "es6": true
   },
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 8
+  },
+  "globals": {
+    "$ReadOnlyArray": true
   },
   "extends": "eslint:recommended",
   "rules": {

@@ -1,5 +1,7 @@
+
+
 const { graphql, buildSchema } = require('graphql');
-const { parser, has } = require('../src');
+const { parser, has } = require('../index');
 
 let SimpleSchema = `
 	type SimpleSchema {
@@ -237,32 +239,6 @@ describe('GraphQL Outfields Parser Tests', () => {
 				expect(() => {
 					parser(undefined);
 					parser({});
-				}).not.toThrow();
-
-				expect(res.errors).toBeUndefined();
-			});
-		});
-
-		test('should not throw if context is somehow malformed', () => {
-			let query = '{ simple { foo, bar }}';
-			let context = { fieldNodes: [undefined, {}] };
-
-			return graphql(schema, query, resolvers).then(res => {
-				expect(() => parser(context)).not.toThrow();
-
-				expect(res.errors).toBeUndefined();
-			});
-		});
-
-		test('should return an empty object if context is somehow malformed', () => {
-			let query = '{ simple { foo, bar }}';
-			let context = { fieldNodes: [undefined, {}] };
-
-			return graphql(schema, query, resolvers).then(res => {
-				expect(() => {
-					let { fields, has: local_has } = parser(context);
-					expect(local_has('simple.foo')).toBeFalsy();
-					expect(Object.keys(fields).length).toBe(0);
 				}).not.toThrow();
 
 				expect(res.errors).toBeUndefined();

@@ -2,13 +2,17 @@
 	"name": "graphql-outfields",
 	"version": "0.9.0",
 	"description": "Parse the return fields from a GraphQL query",
-	"main": "src/index.js",
+	"main": "dist/index.js",
 	"author": "Robert-W <RWinter85@gmail.com>",
 	"license": "MIT",
 	"scripts": {
+		"build": "babel src --out-dir dist/",
+		"clean": "rm -rf dist/",
 		"test": "set -e; npm run test:lint; npm run test:jest;",
 		"test:lint": "eslint \"src/**/*.js\"",
-		"test:jest": "jest"
+		"test:jest": "jest src",
+		"test:flow": "flow",
+		"prepublish": "npm run clean; npm run build;"
 	},
 	"jest": {
 		"verbose": true,
@@ -20,7 +24,13 @@
 		]
 	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-eslint": "^8.1.2",
+		"babel-plugin-transform-es2015-block-scoping": "^6.26.0",
+		"babel-preset-env": "^1.6.1",
+		"babel-preset-flow": "^6.23.0",
 		"eslint": "^4.13.1",
+		"flow-bin": "^0.62.0",
 		"graphql": "^0.11.7",
 		"jest": "^21.2.1"
 	}

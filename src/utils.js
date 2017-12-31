@@ -1,17 +1,20 @@
-let hasValue = function (object = {}, path = '') {
-	let props = path.split('.');
-	let current = props.shift();
-	// If we only have one property, return the value
-	if (props.length === 0) {
-		return object[current] !== undefined ? object[current] : false;
-	}
+// @flow
+import type { GraphQLOutfieldTree } from './definitions';
+
+let hasValue = function (tree: GraphQLOutfieldTree = {}, path: string = ''): boolean {
+	let props: Array<string> = path.split('.');
+	let property: string = props.shift();
 	// If the path is invalid, return false
-	else if (object[current] === undefined) {
+	if (tree[property] === undefined) {
 		return false;
 	}
-	// keep going until we have traversed the full path
+	// If this is the end of the line, return current value as bool
+	else if (typeof tree[property] === 'boolean' || props.length === 0) {
+		return !!tree[property];
+	}
+	// Continue traversing
 	else {
-		return hasValue(object[current], props.join('.'));
+		return hasValue(tree[property], props.join('.'));
 	}
 };
 
