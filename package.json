@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "babel src --out-dir dist/",
 		"clean": "rm -rf dist/",
-		"test": "set -e; npm run test:lint; npm run test:jest;",
+		"test": "set -e; npm run test:lint; npm run test:jest; npm run test:flow;",
 		"test:lint": "eslint \"src/**/*.js\"",
 		"test:jest": "jest src",
 		"test:flow": "flow",
