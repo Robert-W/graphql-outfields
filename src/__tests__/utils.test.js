@@ -1,8 +1,10 @@
+// @flow
 
+import { hasValue } from '../utils';
 
-const { hasValue } = require('../utils');
+import type { GraphQLOutfieldTree } from '../definitions';
 
-const mock = {
+const mock:GraphQLOutfieldTree = {
 	scooby: {
 		dooby: {
 			doo: true

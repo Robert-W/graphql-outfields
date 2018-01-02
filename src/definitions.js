@@ -29,7 +29,7 @@ export type OutfieldParserReturn = {
  */
 
 export type GraphQLOutfieldTree = {
-	[key: string]: boolean | GraphQLOutfieldTree;
+	[key: string]: boolean | GraphQLOutfieldTree
 };
 
 /**
@@ -40,19 +40,19 @@ export type GraphQLOutfieldTree = {
  */
 
 export type ResolveInfo = {
-	fieldNodes: Array<Node>;
+	fieldNodes: Array<Node>
 };
 
 export type Node = {
 	name: NodeName,
-	selectionSet: ?NodeSelectionSet;
+	selectionSet?: NodeSelectionSet
 };
 
 export type NodeName = {
-	kind: string;
-	value: string;
+	kind: string,
+	value: string
 };
 
 export type NodeSelectionSet = {
-	selections: ?Array<Node>;
+	selections?: Array<Node>
 };

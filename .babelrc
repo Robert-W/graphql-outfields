@@ -11,7 +11,6 @@
 		["transform-es2015-block-scoping", { "throwIfClosureRequired": true }]
 	],
 	"ignore": [
-		"__tests__",
 		"definitions.js"
 	]
 }

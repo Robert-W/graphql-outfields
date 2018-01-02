@@ -1,9 +1,19 @@
+// @flow
 
+import { graphql, buildSchema } from 'graphql';
+import { parser, has } from '../index';
 
-const { graphql, buildSchema } = require('graphql');
-const { parser, has } = require('../index');
+import type {
+	OutfieldParserReturn,
+	GraphQLOutfieldTree,
+	ResolveInfo
+} from '../definitions';
 
-let SimpleSchema = `
+import type {
+	GraphQLSchema
+} from 'graphql/type/schema';
+
+let SimpleSchema: string = `
 	type SimpleSchema {
 		foo: String
 		bar: String
@@ -11,7 +21,7 @@ let SimpleSchema = `
 	}
 `;
 
-let UsersSchema = `
+let UsersSchema: string = `
 	type User {
 		full_name: String
 		username: String
@@ -26,7 +36,7 @@ let UsersSchema = `
 	}
 `;
 
-let schema = buildSchema(`
+let schema: GraphQLSchema = buildSchema(`
 	${SimpleSchema}
 	${UsersSchema}
 	type Query {
@@ -35,7 +45,7 @@ let schema = buildSchema(`
 	}
 `);
 
-let resolvers = {};
+let resolvers: any = {};
 
 /**
  * @NOTE
@@ -54,8 +64,8 @@ describe('GraphQL Outfields Parser Tests', () => {
 	describe('Function: has', () => {
 
 		test('should check if certain outfields are present', () => {
-			let _context;
-			let query = '{ simple { foo, bar }}';
+			let _context: ResolveInfo;
+			let query: string = '{ simple { foo, bar }}';
 
 			resolvers.simple = (root, args, context) => {
 				_context = context;
@@ -71,8 +81,8 @@ describe('GraphQL Outfields Parser Tests', () => {
 		});
 
 		test('should check if nested outfields are present', () => {
-			let _context;
-			let query = '{ users { users { username, email, full_name }}}';
+			let _context: ResolveInfo;
+			let query: string = '{ users { users { username, email, full_name }}}';
 
 			resolvers.users = (root, args, context) => {
 				_context = context;
@@ -88,9 +98,9 @@ describe('GraphQL Outfields Parser Tests', () => {
 		});
 
 		test('should be able to check for fields for multiple schemas in one query', () => {
-			let _simple_context, _user_context;
+			let _simple_context: ResolveInfo, _user_context: ResolveInfo;
 			// Query for users and our simple query at once
-			let query = `{
+			let query: string = `{
 				simple { foo, baz }
 				users {
 					users { username, email }
@@ -126,12 +136,14 @@ describe('GraphQL Outfields Parser Tests', () => {
 		});
 
 		test('should not throw an error if given invalid parameters', () => {
-			let query = '{ simple { foo, bar }}';
+			let query: string = '{ simple { foo, bar }}';
+			let empty: ResolveInfo = { fieldNodes: []};
+			let info: ResolveInfo;
 
 			return graphql(schema, query, resolvers).then(res => {
 				expect(() => {
-					has(undefined, 'foo.bar');
-					has({}, undefined);
+					has(info, 'foo.bar');
+					has(empty, undefined);
 				}).not.toThrow();
 
 				expect(res.errors).toBeUndefined();
@@ -143,8 +155,8 @@ describe('GraphQL Outfields Parser Tests', () => {
 	describe('Function: parser', () => {
 
 		test('should parse outfields from a simple query', () => {
-			let _context;
-			let query = '{ simple { foo, bar }}';
+			let _context: ResolveInfo;
+			let query: string = '{ simple { foo, bar }}';
 
 			// Setup a custom resolver and execute our tests here
 			resolvers.simple = (root, args, context) => {
@@ -153,22 +165,26 @@ describe('GraphQL Outfields Parser Tests', () => {
 			};
 
 			return graphql(schema, query, resolvers).then(res => {
-				let { fields } = parser(_context);
+				let { fields }: OutfieldParserReturn = parser(_context);
 				// Parser will always return the fields inside an object
 				// with a property matching the schemas name
-				let { simple } = fields;
+				let { simple }: GraphQLOutfieldTree = fields;
 				// Simple should include all the fields asked for from above
 				// but not any of the fields we did not ask for
-				expect(simple.foo).toBeTruthy();
-				expect(simple.bar).toBeTruthy();
-				expect(simple.baz).toBeFalsy();
+				if (typeof simple === 'boolean') {
+					throw new Error('Simple was not returned correctly');
+				} else {
+					expect(simple.foo).toBeTruthy();
+					expect(simple.bar).toBeTruthy();
+					expect(simple.baz).toBeFalsy();
+				}
 				expect(res.errors).toBeUndefined();
 			});
 		});
 
 		test('should return a convenience `has` function to check if fields exist', () => {
-			let _context;
-			let query = '{ simple { foo, bar }}';
+			let _context: ResolveInfo;
+			let query: string = '{ simple { foo, bar }}';
 
 			// Setup a custom resolver and execute our tests here
 			resolvers.simple = (root, args, context) => {
@@ -177,7 +193,7 @@ describe('GraphQL Outfields Parser Tests', () => {
 			};
 
 			return graphql(schema, query, resolvers).then(res => {
-				let { has: local_has } = parser(_context);
+				let { has: local_has }: OutfieldParserReturn = parser(_context);
 				// the has function should provide a convenience accessor so you
 				// do not need to do safety checks, e.g foo && foo.bar && foo.bar.baz
 				expect(local_has('simple.foo')).toBeTruthy();
@@ -188,9 +204,9 @@ describe('GraphQL Outfields Parser Tests', () => {
 		});
 
 		test('should be able to parse outfield from multiple query types at once', () => {
-			let _simple_context, _user_context;
+			let _simple_context: ResolveInfo, _user_context: ResolveInfo;
 			// Query for users and our simple query at once
-			let query = `{
+			let query: string = `{
 				simple { foo, baz }
 				users {
 					users { username, email }
@@ -213,14 +229,18 @@ describe('GraphQL Outfields Parser Tests', () => {
 
 			return graphql(schema, query, resolvers).then(res => {
 				// Test the simple resolver outfields
-				let { fields: simple_fields = {}} = parser(_simple_context);
-				let { simple } = simple_fields;
+				let { fields: simple_fields }: OutfieldParserReturn = parser(_simple_context);
+				let { simple }: GraphQLOutfieldTree = simple_fields;
 
-				expect(simple.foo).toBeTruthy();
-				expect(simple.bar).toBeFalsy();
-				expect(simple.baz).toBeTruthy();
+				if (typeof simple === 'boolean') {
+					throw new Error('Simple was not returned correctly');
+				} else {
+					expect(simple.foo).toBeTruthy();
+					expect(simple.bar).toBeFalsy();
+					expect(simple.baz).toBeTruthy();
+				}
 
-				let { has: users_have = {}} = parser(_user_context);
+				let { has: users_have }: OutfieldParserReturn = parser(_user_context);
 
 				expect(users_have('users.from')).toBeTruthy();
 				expect(users_have('users.to')).toBeTruthy();
@@ -233,12 +253,14 @@ describe('GraphQL Outfields Parser Tests', () => {
 		});
 
 		test('should not throw an error if given invalid parameters', () => {
-			let query = '{ simple { foo, bar }}';
+			let query: string = '{ simple { foo, bar }}';
+			let empty: ResolveInfo = { fieldNodes: []};
+			let info: ResolveInfo;
 
 			return graphql(schema, query, resolvers).then(res => {
 				expect(() => {
-					parser(undefined);
-					parser({});
+					parser(info);
+					parser(empty);
 				}).not.toThrow();
 
 				expect(res.errors).toBeUndefined();
