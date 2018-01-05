@@ -55,7 +55,7 @@ let resolvers: any = {};
 
 describe('GraphQL Outfields Parser Tests', () => {
 
-	beforeAll(() => {
+	beforeEach(() => {
 		// Setup default resolvers
 		resolvers.simple = () => ({});
 		resolvers.users = () => ({});
