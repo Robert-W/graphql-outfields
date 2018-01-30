@@ -1,8 +1,9 @@
 {
 	"name": "graphql-outfields",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"description": "Parse the return fields from a GraphQL query",
 	"main": "dist/index.js",
+	"repository": "https://github.com/Robert-W/graphql-outfields",
 	"author": "Robert-W <RWinter85@gmail.com>",
 	"license": "MIT",
 	"scripts": {
